@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
@@ -33,19 +34,24 @@ class UserServiceImplTest {
         // I'm checking if this method ran or not.
         verify(userRepository).findByUserNameAndIsDeleted("harold@manager.com", false);
 
-        verify(userRepository, times(1)).findByUserNameAndIsDeleted("harold@manager.com", false);
+        verify(userRepository,times(1)).
+                findByUserNameAndIsDeleted("harold@manager.com",false);
 
-        verify(userRepository, atLeastOnce()).findByUserNameAndIsDeleted("harold@manager.com", false);
-        verify(userRepository, atLeast(1)).findByUserNameAndIsDeleted("harold@manager.com", false);
+        verify(userRepository,atLeastOnce()).
+                findByUserNameAndIsDeleted("harold@manager.com",false);
 
-        verify(userRepository, atMostOnce()).findByUserNameAndIsDeleted("harold@manager.com", false);
-        verify(userRepository, atMost(10)).findByUserNameAndIsDeleted("harold@manager.com", false);
+        verify(userRepository,atLeast(1)).
+                findByUserNameAndIsDeleted("harold@manager.com",false);
 
-        InOrder inOrder = inOrder(userRepository, userMapper);
+        verify(userRepository,atMostOnce()).
+                findByUserNameAndIsDeleted("harold@manager.com",false);
 
-        inOrder.verify(userRepository).findByUserNameAndIsDeleted("harold@manager.com", false);
+        verify(userRepository,atMost(10)).
+                findByUserNameAndIsDeleted("harold@manager.com",false);
+
+        InOrder inOrder=inOrder(userRepository,userMapper);
+        inOrder.verify(userRepository).findByUserNameAndIsDeleted("harold@manager.com",false);
         inOrder.verify(userMapper).convertToDto(null);
-
     }
 
 }
