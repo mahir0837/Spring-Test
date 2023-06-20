@@ -20,47 +20,37 @@ import static org.mockito.Mockito.*;
 class ProjectServiceImplTest {
 
     @Mock
-    ProjectRepository projectRepository;
-
-    @Mock
     ProjectMapper projectMapper;
-
+    @Mock
+    ProjectRepository projectRepository;
     @InjectMocks
     ProjectServiceImpl projectService;
 
     @Test
-    void getByProjectCode_Test() {
-
-        // Given
-        when(projectRepository.findByProjectCode(anyString())).thenReturn(new Project());   // Stubbing
+    void getByProjectCode_Test(){
+        when(projectRepository.findByProjectCode(anyString())).thenReturn(new Project());
         when(projectMapper.convertToDto(any(Project.class))).thenReturn(new ProjectDTO());
 
-        // When
-        ProjectDTO projectDTO = projectService.getByProjectCode(anyString());
+        ProjectDTO projectDTO=projectService.getByProjectCode(anyString());
 
-        // Then
-        InOrder inOrder = inOrder(projectRepository, projectMapper);  // I want to check the order of these 2 Mocks
-
-        inOrder.verify(projectRepository).findByProjectCode(anyString());   // We are providing in which order these 2 Mocks should be
+        InOrder inOrder=inOrder(projectRepository,projectMapper);
+        inOrder.verify(projectRepository).findByProjectCode(anyString());
         inOrder.verify(projectMapper).convertToDto(any(Project.class));
 
         assertNotNull(projectDTO);
-
     }
-
     @Test
-    void getByProjectCode_ExceptionTest() {
+    void getByProjectCode_ExceptionTest(){
 
-        when(projectRepository.findByProjectCode("")).thenThrow(new NoSuchElementException("Project Not Found"));
+        when(projectRepository.findByProjectCode("")).
+                thenThrow(new NoSuchElementException("Project Not Found"));
 
-        Throwable throwable = assertThrows(NoSuchElementException.class, () -> projectService.getByProjectCode(""));
+        Throwable throwable=assertThrows(NoSuchElementException.class,()->projectService.getByProjectCode(""));
 
         verify(projectRepository).findByProjectCode("");
-
-        verify(projectMapper, never()).convertToDto(any(Project.class));
+        verify(projectMapper,never()).convertToDto(any(Project.class));
 
         assertEquals("Project Not Found", throwable.getMessage());
-
     }
 
 }
