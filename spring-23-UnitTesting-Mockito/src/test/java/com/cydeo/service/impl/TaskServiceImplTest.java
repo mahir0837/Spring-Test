@@ -15,7 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,47 +24,39 @@ class TaskServiceImplTest {
 
     @Mock
     TaskRepository taskRepository;
-
     @Mock
     TaskMapper taskMapper;
-
     @InjectMocks
-    TaskServiceImpl taskServiceImpl;
+    TaskServiceImpl taskService;
 
     @ParameterizedTest
-    @ValueSource(longs = {1L, 2L, 3L})
-    void findById_Test(long id) {
+    @ValueSource(longs = {1L,2L,3L})
+    void findById_Test(long id){
+        //Given (Preparation)
+        Task task=new Task();
 
-        // Given (Preparation)
-        Task task = new Task();
-
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));   // Optional<Task>
+        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
         when(taskMapper.convertToDto(task)).thenReturn(new TaskDTO());
 
-        // When (Action is happening)
-        taskServiceImpl.findById(id);// We are not defining this will be the method I want to test.
+        //When(Action is happening)
+        taskService.findById(id);
 
-        // Then (Assertion and verification checks)
+        //Then(Assertion and verification checks)
         verify(taskRepository).findById(id);
         verify(taskMapper).convertToDto(task);
-
     }
 
     @Test
-    void findById_BDD_Test() {
+    void findById_BDD_Test(){
 
-        // Given
-        Task task = new Task();
+        Task task=new Task();
+
         given(taskRepository.findById(anyLong())).willReturn(Optional.of(task));
         given(taskMapper.convertToDto(task)).willReturn(new TaskDTO());
 
-        // When
-        taskServiceImpl.findById(anyLong());
+        taskService.findById(anyLong());
 
-        // Then
         then(taskRepository).should().findById(anyLong());
         then(taskMapper).should(atLeastOnce()).convertToDto(task);
-
     }
-
 }
